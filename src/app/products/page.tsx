@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import Navbar from '@/components/shop/Navbar';
@@ -16,7 +16,7 @@ const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest' },
 ];
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState(
@@ -321,5 +321,19 @@ export default function ProductsPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }
